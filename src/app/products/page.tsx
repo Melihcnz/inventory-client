@@ -5,6 +5,8 @@ import { PlusIcon, SearchIcon } from "lucide-react";
 import React, { useState } from "react";
 import Header from "@/app/(components)/Header";
 import { Button } from "@mui/material";
+import Rating from "@/app/(components)/Rating";
+
 
 function Products() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -62,13 +64,20 @@ function Products() {
                 <h3 className="text-lg text-gray-900 font-semibold">{product.name}</h3>
                 <p className="text-gray-800">${product.price.toFixed(2)}</p>
                 <div className="text-sm text-gray-600 mt-1">
-                    Stock: 
+                  Stock: {product.stockQuantity}
                 </div>
+                {product.rating && (
+                  <div className="flex items-center mt-2">
+                    <Rating rating = {product.rating} />
+                  </div>
+                )}
               </div>
             </div>
           ))
         )}
       </div>
+
+      {/* MODEL */}
     </div>
   );
 }
