@@ -1,18 +1,29 @@
 "use client";
 
-import { useGetProductsQuery } from "@/state/api";
+import { useCreateProductMutation, useGetProductsQuery } from "@/state/api";
 import { PlusIcon, SearchIcon } from "lucide-react";
 import React, { useState } from "react";
 import Header from "@/app/(components)/Header";
-import { Button } from "@mui/material";
 import Rating from "@/app/(components)/Rating";
+import CreateProductModal from "./CreateProductModal";
 
+type ProductFormData = {
+  name: string;
+  price: number;
+  stockQuantity: number;
+  rating: number;
+};
 
-function Products() {
+const Products = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isModelOpen, setIsModelOpen] = useState(false);
 
   const { data: products, isLoading, error } = useGetProductsQuery(searchTerm);
+
+  const [createProduct] = useCreateProductMutation();
+  const handleCreateProduct = async (productData: ProductFormData) => {
+    await createProduct(productData);
+  };
 
   if (isLoading) {
     return <div className="py-4">Loading...</div>;
@@ -43,13 +54,13 @@ function Products() {
       {/* HEADER BAR */}
       <div className="flex justify-between items-center mb-6">
         <Header name="products" />
-        <Button
+        <button
           className="flex items-center bg-blue-500 hover:bg-blue-700 !text-gray-200 font-bold py-2 px-4 rounded"
           onClick={() => setIsModelOpen(true)}
         >
           <PlusIcon className="w-5 h-5 mr-2 !text-gray-200" />
           Create New Product
-        </Button>
+        </button>
       </div>
 
       {/* BODY PRODUCTS LIST */}
@@ -78,6 +89,11 @@ function Products() {
       </div>
 
       {/* MODEL */}
+      <CreateProductModal
+        isOpen={isModelOpen}
+        onClose={() => setIsModelOpen(false)}
+        onCreate={handleCreateProduct}
+      />
     </div>
   );
 }
